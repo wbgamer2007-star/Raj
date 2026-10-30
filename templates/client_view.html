@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}{{ c.name }}{% endblock %}
+{% block body %}
+<div class="head">
+  <h1>{{ c.name }} <span class="badge {{ 'ok' if c.status == 'active' else 'bad' }}">{{ 'সক্রিয়' if c.status == 'active' else 'স্থগিত' }}</span></h1>
+  <a class="btn ghost" href="{{ url_for('client_settings', client_id=c.id) }}">সেটিংস বদলান</a>
+</div>
+<div class="card">
+  <h2>সংযোগের অবস্থা</h2>
+  <dl>
+    <dt>Facebook Page</dt>
+    <dd>{{ c.page_name }} (ID: {{ c.page_id }})<br>
+      <span class="badge ok">টোকেন যাচাই হয়েছে</span> <span class="muted">{{ c.validated_at | dt }} (ঢাকা সময়)</span></dd>
+    <dt>মেসেজ গ্রহণ (Webhook)</dt>
+    <dd><span class="badge warn">এখনো চালু হয়নি</span> <span class="muted">পরের ধাপে বানানো হবে।</span></dd>
+    <dt>Gemini key</dt>
+    <dd>{{ 'এই client-এর নিজস্ব key আছে' if c.gemini_key_enc else 'সাধারণ key ব্যবহার হবে' }}</dd>
+  </dl>
+</div>
+<div class="card">
+  <h2>অর্ডার ও নির্দেশ</h2>
+  <dl>
+    <dt>অর্ডারের ধরন</dt><dd>{{ ORDER_MODES[c.order_mode] }}</dd>
+    <dt>ফোন নম্বর</dt><dd>{{ c.phone or '—' }}</dd>
+    <dt>AI-এর নির্দেশ</dt><dd class="pre">{{ c.custom_instructions or '—' }}</dd>
+  </dl>
+</div>
+{% if user.role == 'admin' %}
+<div class="card">
+  <h2>অ্যাডমিনের কাজ</h2>
+  <p>দায়িত্বে থাকা কর্মচারী: {{ staff_names | join(', ') or 'কেউ নেই' }}</p>
+  <div class="actions">
+    <a class="btn ghost" href="{{ url_for('client_page', client_id=c.id) }}">Page বদলান / টোকেন নবায়ন</a>
+    <form method="post" action="{{ url_for('client_status', client_id=c.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      {% if c.status == 'active' %}
+      <input type="hidden" name="to" value="suspended">
+      <button class="btn danger" type="submit">client স্থগিত করুন</button>
+      {% else %}
+      <input type="hidden" name="to" value="active">
+      <button class="btn" type="submit">আবার চালু করুন</button>
+      {% endif %}
+    </form>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

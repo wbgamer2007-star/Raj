@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Client{% endblock %}
+{% block body %}
+<div class="head"><h1>Client</h1>
+{% if user.role == 'admin' %}<a class="btn" href="{{ url_for('client_new') }}">নতুন client</a>{% endif %}</div>
+{% if rows %}
+<div class="tablewrap"><table>
+  <thead><tr><th>নাম</th><th>Facebook Page</th><th>অর্ডারের ধরন</th>{% if user.role == 'admin' %}<th>কর্মচারী</th>{% endif %}<th>অবস্থা</th></tr></thead>
+  <tbody>
+  {% for c in rows %}
+  <tr>
+    <td><a href="{{ url_for('client_view', client_id=c.id) }}">{{ c.name }}</a></td>
+    <td>{{ c.page_name }}</td>
+    <td>{{ 'AI অর্ডার' if c.order_mode == 'ai_orders' else 'শুধু ফোন' }}</td>
+    {% if user.role == 'admin' %}<td>{{ c.staff_names | join(', ') or '—' }}</td>{% endif %}
+    <td><span class="badge {{ 'ok' if c.status == 'active' else 'bad' }}">{{ 'সক্রিয়' if c.status == 'active' else 'স্থগিত' }}</span></td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table></div>
+{% else %}
+<div class="card"><p>এখনো কোনো client নেই।{% if user.role == 'admin' %} ওপরের বোতাম দিয়ে প্রথম client যোগ করুন।{% endif %}</p></div>
+{% endif %}
+{% endblock %}

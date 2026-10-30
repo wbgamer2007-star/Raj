@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}ড্যাশবোর্ড{% endblock %} · পেজ ম্যানেজার</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+{% if memory_mode %}<div class="banner">পরীক্ষামূলক মেমরি ডেটাবেস চলছে। সার্ভার বন্ধ হলে সব ডেটা মুছে যাবে। আসল কাজে ব্যবহার করবেন না।</div>{% endif %}
+{% if user %}
+<div class="shell">
+  <nav class="side">
+    <a class="brand" href="{{ url_for('dashboard') }}">পেজ ম্যানেজার</a>
+    <a href="{{ url_for('dashboard') }}">ড্যাশবোর্ড</a>
+    <a href="{{ url_for('clients_list') }}">Client</a>
+    {% if user.role == 'admin' %}
+    <a href="{{ url_for('staff_list') }}">কর্মচারী</a>
+    <a href="{{ url_for('audit_view') }}">কাজের রেকর্ড</a>
+    {% endif %}
+    <form method="post" action="{{ url_for('logout') }}" class="logout">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <span class="who">{{ user.name }}{% if user.role == 'admin' %} (অ্যাডমিন){% endif %}</span>
+      <button class="btn ghost" type="submit">বের হন</button>
+    </form>
+  </nav>
+  <main class="main">
+{% else %}
+  <main class="main solo">
+{% endif %}
+    {% with msgs = get_flashed_messages(with_categories=true) %}
+      {% for cat, m in msgs %}<div class="flash {{ cat }}" role="status">{{ m }}</div>{% endfor %}
+    {% endwith %}
+    {% block body %}{% endblock %}
+  </main>
+{% if user %}</div>{% endif %}
+</body>
+</html>

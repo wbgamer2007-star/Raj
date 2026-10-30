@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}সেটিংস · {{ c.name }}{% endblock %}
+{% block body %}
+<h1>{{ c.name }}: সেটিংস</h1>
+<form method="post" class="card form">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  {% if user.role == 'admin' %}
+  <label>client-এর নাম
+    <input name="name" maxlength="80" required value="{{ form.get('name') or c.name }}"></label>
+  {% endif %}
+  <label>অর্ডার নেওয়ার ধরন
+    <select name="order_mode">
+      {% for k, v in ORDER_MODES.items() %}<option value="{{ k }}" {% if (form.get('order_mode') or c.order_mode) == k %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select></label>
+  <label>client-এর ফোন নম্বর
+    <input name="phone" inputmode="tel" maxlength="20" value="{{ form.get('phone') if request.method == 'POST' else c.phone }}"></label>
+  <label>AI-এর জন্য বিশেষ নির্দেশ
+    <textarea name="custom_instructions" rows="8" maxlength="5000">{{ form.get('custom_instructions') if request.method == 'POST' else c.custom_instructions }}</textarea></label>
+  {% if user.role == 'admin' %}
+  <label>নতুন Gemini key (বদলাতে চাইলে লিখুন, না হলে খালি রাখুন)
+    <input name="gemini_key" type="password" autocomplete="off"></label>
+  {% if c.gemini_key_enc %}<label class="check"><input type="checkbox" name="clear_gemini_key"> নিজস্ব key মুছে সাধারণ key ব্যবহার করুন</label>{% endif %}
+  {% endif %}
+  <div class="actions">
+    <button class="btn" type="submit">সংরক্ষণ করুন</button>
+    <a class="btn ghost" href="{{ url_for('client_view', client_id=c.id) }}">বাতিল</a>
+  </div>
+</form>
+{% endblock %}

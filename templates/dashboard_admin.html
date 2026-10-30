@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block body %}
+<h1>ড্যাশবোর্ড</h1>
+<div class="grid">
+  <div class="card stat"><b>{{ stats.clients }}</b><span>মোট client</span></div>
+  <div class="card stat"><b>{{ stats.active }}</b><span>সক্রিয় client</span></div>
+  <div class="card stat"><b>{{ stats.suspended }}</b><span>স্থগিত client</span></div>
+  <div class="card stat"><b>{{ stats.staff }}</b><span>কর্মচারী</span></div>
+  <div class="card stat {% if stats.unassigned %}warn{% endif %}"><b>{{ stats.unassigned }}</b><span>কর্মচারী ছাড়া client</span></div>
+</div>
+<div class="actions">
+  <a class="btn" href="{{ url_for('client_new') }}">নতুন client যোগ করুন</a>
+  <a class="btn ghost" href="{{ url_for('staff_new') }}">নতুন কর্মচারী</a>
+</div>
+{% endblock %}

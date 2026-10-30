@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}লগইন{% endblock %}
+{% block body %}
+<section class="card narrow">
+  <h1>লগইন</h1>
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>ইমেইল (অ্যাডমিনের জন্য ইউজারনেম)
+      <input name="identifier" autocomplete="username" required autofocus></label>
+    <label>পাসওয়ার্ড
+      <input name="password" type="password" autocomplete="current-password" required></label>
+    <button class="btn" type="submit">ঢুকুন</button>
+  </form>
+</section>
+{% endblock %}

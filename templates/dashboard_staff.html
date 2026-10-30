@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block body %}
+<h1>আপনার client</h1>
+{% if clients %}
+<div class="grid">
+  {% for c in clients %}
+  <a class="card link" href="{{ url_for('client_view', client_id=c.id) }}">
+    <b>{{ c.name }}</b>
+    <span class="muted">{{ c.page_name }}</span>
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<div class="card"><p>আপনাকে এখনো কোনো client দেওয়া হয়নি। অ্যাডমিনকে বলুন।</p></div>
+{% endif %}
+{% endblock %}

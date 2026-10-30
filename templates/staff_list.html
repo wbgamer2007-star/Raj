@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}কর্মচারী{% endblock %}
+{% block body %}
+<div class="head"><h1>কর্মচারী</h1><a class="btn" href="{{ url_for('staff_new') }}">নতুন কর্মচারী</a></div>
+{% if rows %}
+<div class="tablewrap"><table>
+  <thead><tr><th>নাম</th><th>ইমেইল</th><th>দায়িত্বে থাকা client</th><th>অবস্থা</th></tr></thead>
+  <tbody>
+  {% for s in rows %}
+  <tr>
+    <td><a href="{{ url_for('staff_edit', sid=s.id) }}">{{ s.name }}</a></td>
+    <td>{{ s.email }}</td>
+    <td>{{ s.client_names | join(', ') or '—' }}</td>
+    <td><span class="badge {{ 'ok' if s.active else 'bad' }}">{{ 'সক্রিয়' if s.active else 'বন্ধ' }}</span></td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table></div>
+{% else %}
+<div class="card"><p>এখনো কোনো কর্মচারী নেই।</p></div>
+{% endif %}
+{% endblock %}

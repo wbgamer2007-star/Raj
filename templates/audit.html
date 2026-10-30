@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}কাজের রেকর্ড{% endblock %}
+{% block body %}
+<h1>কাজের রেকর্ড <span class="muted">(সর্বশেষ ১০০টি)</span></h1>
+{% if rows %}
+<div class="tablewrap"><table>
+  <thead><tr><th>সময় (ঢাকা)</th><th>কে</th><th>কাজ</th><th>client</th><th>বিবরণ</th></tr></thead>
+  <tbody>
+  {% for r in rows %}
+  <tr><td>{{ r.ts | dt }}</td><td>{{ r.actor }}</td><td>{{ r.action }}</td><td>{{ r.client_name or '—' }}</td><td>{{ r.detail }}</td></tr>
+  {% endfor %}
+  </tbody>
+</table></div>
+{% else %}
+<div class="card"><p>এখনো কোনো রেকর্ড নেই।</p></div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}নতুন client{% endblock %}
+{% block body %}
+<h1>নতুন client যোগ করুন</h1>
+<form method="post" class="card form">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <label>client-এর নাম
+    <input name="name" maxlength="80" required value="{{ form.get('name', '') }}"></label>
+  <label>Facebook Page ID (শুধু সংখ্যা)
+    <input name="page_id" inputmode="numeric" maxlength="30" required value="{{ form.get('page_id', '') }}"></label>
+  <label>Page Access Token
+    <input name="page_token" type="password" autocomplete="off" required>
+    <small>যাচাইয়ের পর এনক্রিপ্ট করে রাখা হয়। এটা আর কোথাও দেখানো হয় না।</small></label>
+  <label>অর্ডার নেওয়ার ধরন
+    <select name="order_mode">
+      {% for k, v in ORDER_MODES.items() %}<option value="{{ k }}" {% if form.get('order_mode', 'ai_orders') == k %}selected{% endif %}>{{ v }}</option>{% endfor %}
+    </select></label>
+  <label>client-এর ফোন নম্বর (শুধু ফোনে অর্ডার নিলে বাধ্যতামূলক)
+    <input name="phone" inputmode="tel" maxlength="20" value="{{ form.get('phone', '') }}"></label>
+  <label>AI-এর জন্য বিশেষ নির্দেশ
+    <textarea name="custom_instructions" rows="6" maxlength="5000">{{ form.get('custom_instructions', '') }}</textarea></label>
+  <label>এই client-এর নিজস্ব Gemini key (ঐচ্ছিক)
+    <input name="gemini_key" type="password" autocomplete="off">
+    <small>খালি রাখলে সাধারণ key ব্যবহার হবে।</small></label>
+  <div class="actions">
+    <button class="btn" type="submit">যাচাই করে যোগ করুন</button>
+    <a class="btn ghost" href="{{ url_for('clients_list') }}">বাতিল</a>
+  </div>
+</form>
+{% endblock %}

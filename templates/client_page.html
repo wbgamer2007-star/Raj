@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Page সংযোগ · {{ c.name }}{% endblock %}
+{% block body %}
+<h1>{{ c.name }}: Page বদলান বা টোকেন নবায়ন</h1>
+<form method="post" class="card form">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <p class="muted">এখন যুক্ত: {{ c.page_name }} (ID: {{ c.page_id }}). একই ID রেখে নতুন টোকেন দিলে শুধু টোকেন নবায়ন হবে।</p>
+  <label>Facebook Page ID
+    <input name="page_id" inputmode="numeric" maxlength="30" required value="{{ form.get('page_id') or c.page_id }}"></label>
+  <label>Page Access Token
+    <input name="page_token" type="password" autocomplete="off" required></label>
+  <label class="check"><input type="checkbox" name="confirm"> আমি নিশ্চিত, Page বদলাতে চাই (পুরনো Page-এর সংযোগ বাদ যাবে)</label>
+  <div class="actions">
+    <button class="btn" type="submit">যাচাই করে সংরক্ষণ করুন</button>
+    <a class="btn ghost" href="{{ url_for('client_view', client_id=c.id) }}">বাতিল</a>
+  </div>
+</form>
+{% endblock %}

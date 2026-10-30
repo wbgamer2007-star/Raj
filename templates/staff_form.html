@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}{{ 'কর্মচারী সম্পাদনা' if staff else 'নতুন কর্মচারী' }}{% endblock %}
+{% block body %}
+<h1>{{ 'কর্মচারী সম্পাদনা' if staff else 'নতুন কর্মচারী' }}</h1>
+{% set is_post = request.method == 'POST' %}
+{% set active_on = (form.get('active') == 'on') if is_post else (staff.active if staff else True) %}
+{% set picked = form.getlist('clients') if is_post else (staff.assigned_client_ids if staff else []) %}
+<form method="post" class="card form">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <label>নাম
+    <input name="name" maxlength="80" required value="{{ form.get('name') or (staff.name if staff else '') }}"></label>
+  {% if staff %}
+  <p class="muted">ইমেইল: {{ staff.email }} (বদলানো যায় না)</p>
+  {% else %}
+  <label>ইমেইল
+    <input name="email" type="email" maxlength="120" required value="{{ form.get('email', '') }}"></label>
+  {% endif %}
+  <label>{{ 'নতুন পাসওয়ার্ড (বদলাতে চাইলে লিখুন, না হলে খালি রাখুন)' if staff else 'পাসওয়ার্ড (অন্তত ৮ অক্ষর)' }}
+    <input name="password" type="password" autocomplete="new-password" {{ '' if staff else 'required' }}></label>
+  {% if staff %}
+  <label class="check"><input type="checkbox" name="active" {% if active_on %}checked{% endif %}> অ্যাকাউন্ট সক্রিয়</label>
+  {% endif %}
+  <fieldset>
+    <legend>এই কর্মচারী যেসব client দেখবে</legend>
+    {% for c in clients %}
+    <label class="check"><input type="checkbox" name="clients" value="{{ c.id }}"
+      {% if c.id in picked %}checked{% endif %}>
+      {{ c.name }}{% if c.status != 'active' %} (স্থগিত){% endif %}</label>
+    {% else %}
+    <p class="muted">এখনো কোনো client নেই।</p>
+    {% endfor %}
+  </fieldset>
+  <div class="actions">
+    <button class="btn" type="submit">সংরক্ষণ করুন</button>
+    <a class="btn ghost" href="{{ url_for('staff_list') }}">বাতিল</a>
+  </div>
+</form>
+{% endblock %}
